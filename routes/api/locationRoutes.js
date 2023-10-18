@@ -1,53 +1,46 @@
-const express = require('express').Router();
-const { Traveler, Location } = require('../../models');
+const express = require('express');
+const router = express.Router();
+const { Location } = require('../models'); // Import your Location model here
 
-router.get('/', async (req, res) => {
-    try {
-        const travelers = await Traveler.findAll
-        res.status(200).json(travelers);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-});
 
-router.get('/:id', async (req, res) => {
+router.get('/api/locations', async (req, res) => {
     try {
-        const travelers = await traveler.findByPk(req.params.id,)
-        res.json(travelers);
-        } catch (err) {
-            res.status(500).json({ error: 'Nope No worky'})
-        }
-});
-
-router.post('/api/travelers', async (req, res) => {
-    try {
-      const { name, email } = req.body; // Assuming the request body contains name and email properties
-  
-      if (!name || !email) {
-        return res.status(400).json({ error: 'Name and email are required' });
-      }
-  
-      const newTraveler = await Traveller.create({ name, email });
-      res.json(newTraveler);
+      const locations = await Location.findAll();
+      res.json(locations);
     } catch (error) {
-      res.status(500).json({ error: 'Unable to create a traveler' });
+      res.status(500).json({ error: 'Unable to fetch locations' });
     }
   });
   
-  router.delete('/api/travelers/:id', async (req, res) => {
+  router.post('/api/locations', async (req, res) => {
     try {
-      const travelerId = req.params.id;
+      const { location_name } = req.body; // Assuming the request body contains location_name property
   
-      const traveler = await Traveller.findByPk(travelerId);
-  
-      if (!traveler) {
-        return res.status(404).json({ error: 'Traveler not found' });
+      if (!location_name) {
+        return res.status(400).json({ error: 'Location name is required' });
       }
   
-      await traveler.destroy();
-      res.json({ message: 'Traveler deleted successfully' });
+      const newLocation = await Location.create({ location_name });
+      res.json(newLocation);
     } catch (error) {
-      res.status(500).json({ error: 'Unable to delete traveler' });
+      res.status(500).json({ error: 'Unable to create a location' });
+    }
+  });
+  
+  router.delete('/api/locations/:id', async (req, res) => {
+    try {
+      const locationId = req.params.id;
+  
+      const location = await Location.findByPk(locationId);
+  
+      if (!location) {
+        return res.status(404).json({ error: 'Location not found' });
+      }
+  
+      await location.destroy();
+      res.json({ message: 'Location deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Unable to delete location' });
     }
   });
   
